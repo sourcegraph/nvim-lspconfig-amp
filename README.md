@@ -6,6 +6,10 @@ configurations for various LSP servers. View [all configs](doc/configs.md) or `:
 ## Important ⚠️
 
 * These configs are **best-effort and supported by the community (you).** See [contributions](#contributions).
+* The configs live in [`lsp/`](./lsp/).
+    * Upgrade to Nvim 0.11+ and use `vim.lsp.enable('…')` (not `require'…'.pyright.setup{}`) to enable a config.
+* The configs in `lua/lspconfig/` are *deprecated* and will be removed.
+    * Upgrade to Nvim 0.11+ and use `vim.lsp.enable('…')` (not `require'…'.pyright.setup{}`) to enable a config.
 * Ask questions on [GitHub Discussions](https://github.com/neovim/neovim/discussions), not the issue tracker.
 * If you found a bug in Nvim LSP (`:help lsp`), [report it to Neovim core](https://github.com/neovim/neovim/issues/new?assignees=&labels=bug%2Clsp&template=lsp_bug_report.yml).
     * **Do not** report it here. Only configuration data lives here.
@@ -16,10 +20,16 @@ configurations for various LSP servers. View [all configs](doc/configs.md) or `:
 
 [![LuaRocks](https://img.shields.io/luarocks/v/neovim/nvim-lspconfig?logo=lua&color=purple)](https://luarocks.org/modules/neovim/nvim-lspconfig)
 
-* Requires Nvim 0.10 above. Update Nvim and nvim-lspconfig before reporting an issue.
+* Requires Nvim 0.11+. Support for Nvim 0.10 will be removed. Update Nvim and nvim-lspconfig before reporting an issue.
 * Install nvim-lspconfig using Vim's "packages" feature:
   ```
   git clone https://github.com/neovim/nvim-lspconfig ~/.config/nvim/pack/nvim/start/nvim-lspconfig
+  ```
+* Or if you have Nvim 0.12 (in development), you can use the builtin plugin manager:
+  ```lua
+  vim.pack.add{
+    { src = 'https://github.com/neovim/nvim-lspconfig' },
+  }
   ```
 * Or use a 3rd-party plugin manager (consult the documentation for your plugin manager).
 
@@ -50,40 +60,18 @@ For servers not on your `$PATH` (e.g., `jdtls`, `elixirls`), you must manually s
 
 ## Configuration
 
-Nvim sets some default options and mappings when a buffer attaches to LSP (see [`:help lsp-config`][lsp-config]). In particular:
+Nvim sets default options and mappings when LSP is active in a buffer:
+* [:help lsp-defaults](https://neovim.io/doc/user/lsp.html#lsp-defaults)
+* [:help diagnostic-defaults](https://neovim.io/doc/user/diagnostic.html#diagnostic-defaults)
 
-* [`'tagfunc'`][tagfunc]
-    - Enables "go to definition" capabilities using [`<C-]>`][tagjump] and other [tag commands][tag-commands].
-* [`'omnifunc'`][omnifunc]
-    - Enables (manual) omni mode completion with `<C-X><C-O>` in Insert mode.
-* [`'formatexpr'`][formatexpr]
-    - Enables LSP formatting with [`gq`][gq].
-* `K` maps to [`vim.lsp.buf.hover()`][vim.lsp.buf.hover] in Normal mode.
-* `[d` and `]d` map to `vim.diagnostic.jump()` with `{count=-1}` and
-  `vim.diagnostic.jump()` with `{count=1}`, respectively.
-* `<C-W>d` maps to `vim.diagnostic.open_float()`.
-
-[lsp-config]: https://neovim.io/doc/user/lsp.html#lsp-config
-[tagfunc]: https://neovim.io/doc/user/tagsrch.html#tag-function
-[omnifunc]: https://neovim.io/doc/user/options.html#'omnifunc'
-[formatexpr]: https://neovim.io/doc/user/options.html#'formatexpr'
-[gq]: https://neovim.io/doc/user/change.html#gq
-[vim.lsp.buf.hover]: https://neovim.io/doc/user/lsp.html#vim.lsp.buf.hover()
-[tagjump]: https://neovim.io/doc/user/tagsrch.html#CTRL-%5D
-[tag-commands]: https://neovim.io/doc/user/tagsrch.html#tag-commands
-
-Further customization can be achieved using the [`LspAttach`][LspAttach] autocommand event.
-The [`LspDetach`][LspAttach] autocommand event can be used to "cleanup" mappings if a buffer becomes detached from an LSP server.
-See [`:h LspAttach`][LspAttach] and [`:h LspDetach`][LspDetach] for details and examples.
-See [`:h lsp-buf`][lsp-buf] for details on other LSP functions.
-
-[LspAttach]: https://neovim.io/doc/user/lsp.html#LspAttach
-[LspDetach]: https://neovim.io/doc/user/lsp.html#LspDetach
-[lsp-buf]: https://neovim.io/doc/user/lsp.html#lsp-buf
+To customize, see:
+* [:help lsp-attach](https://neovim.io/doc/user/lsp.html#lsp-attach)
+* [:h lsp-buf](https://neovim.io/doc/user/lsp.html#lsp-buf)
 
 Extra settings can be specified for each LSP server:
 
-- Nvim 0.11+ (see [vim.lsp.config](#vimlspconfig))
+- Nvim 0.11+: You can extend a config as follows (see [vim.lsp.config](#vimlspconfig);
+  you can also copy any config directly from [`lsp/`](./lsp/) and put it in a local `lsp/` directory in your 'runtimepath').
   ```lua
   vim.lsp.config('rust_analyzer', {
     -- Server-specific settings. See `:help lsp-quickstart`
@@ -102,27 +90,6 @@ Extra settings can be specified for each LSP server:
     },
   }
   ```
-
-## vim.lsp.config
-
-`nvim-lspconfig` includes configurations compatible with `vim.lsp` under [`lsp/`](./lsp/), so servers can be enabled (auto-activated when a filetype is opened) with:
-
-```lua
-vim.lsp.enable('pyright')
-```
-
-and configured with:
-
-```lua
-vim.lsp.config('pyright', {
-  cmd = { … },
-})
-```
-
-which extends the configuration under [`lsp/`](./lsp/). For further information see [`:help lsp-config`][lsp-config].
-
-> [!WARNING]
-> Some servers are [currently missing](https://github.com/neovim/nvim-lspconfig/issues/3705).
 
 ## Troubleshooting
 
@@ -162,7 +129,7 @@ If a language server is missing from [configs.md](doc/configs.md), contributing
 a new configuration for it helps others, especially if the server requires special setup. Follow these steps:
 
 1. Read [CONTRIBUTING.md](CONTRIBUTING.md).
-2. Create a new file at `lsp/SERVER_NAME.lua`.
+2. Create a new file at `lsp/<server_name>.lua`.
     - Copy an [existing config](https://github.com/neovim/nvim-lspconfig/tree/master/lsp)
       to get started. Most configs are simple. For an extensive example see
       [texlab.lua](https://github.com/neovim/nvim-lspconfig/blob/master/lsp/texlab.lua).
