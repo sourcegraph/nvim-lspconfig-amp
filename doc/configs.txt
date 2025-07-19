@@ -889,8 +889,7 @@ Snippet to enable the language server: >lua
 
 
 Default config:
-- cmd: >lua
-  { "biome", "lsp-proxy" }
+- cmd (use "gF" to view): ../lsp/biome.lua:12
 - filetypes: >lua
   { "astro", "css", "graphql", "html", "javascript", "javascriptreact", "json", "jsonc", "svelte", "typescript", "typescript.tsx", "typescriptreact", "vue" }
 - root_dir (use "gF" to view): ../lsp/biome.lua:12
@@ -1285,7 +1284,7 @@ Default config:
 - cmd: >lua
   { "clangd" }
 - filetypes: >lua
-  { "c", "cpp", "objc", "objcpp", "cuda", "proto" }
+  { "c", "cpp", "objc", "objcpp", "cuda" }
 - on_attach (use "gF" to view): ../lsp/clangd.lua:63
 - on_init (use "gF" to view): ../lsp/clangd.lua:63
 - root_markers: >lua
@@ -3240,7 +3239,7 @@ Snippet to enable the language server: >lua
 
 
 Default config:
-- cmd (use "gF" to view): ../lsp/glint.lua:37
+- cmd (use "gF" to view): ../lsp/glint.lua:25
 - filetypes: >lua
   { "html.handlebars", "handlebars", "typescript", "typescript.glimmer", "javascript", "javascript.glimmer" }
 - init_options: >lua
@@ -6778,6 +6777,15 @@ For example, in order to disable the `inlayHints` option >lua
         },
       },
     })
+  }
+
+Detect file changes: While using @rescript/language-server >= 1.63.0 you have to detect file changes by registering the didChangeWatchedFiles hook >lua
+  capabilities = {
+      workspace = {
+          didChangeWatchedFiles = {
+              dynamicRegistration = true,
+          },
+      },
   }
 
 Snippet to enable the language server: >lua

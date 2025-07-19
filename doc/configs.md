@@ -1501,10 +1501,7 @@ vim.lsp.enable('biome')
 ```
 
 Default config:
-- `cmd` :
-  ```lua
-  { "biome", "lsp-proxy" }
-  ```
+- `cmd`: [../lsp/biome.lua:12](../lsp/biome.lua#L12)
 - `filetypes` :
   ```lua
   { "astro", "css", "graphql", "html", "javascript", "javascriptreact", "json", "jsonc", "svelte", "typescript", "typescript.tsx", "typescriptreact", "vue" }
@@ -2034,7 +2031,7 @@ Default config:
   ```
 - `filetypes` :
   ```lua
-  { "c", "cpp", "objc", "objcpp", "cuda", "proto" }
+  { "c", "cpp", "objc", "objcpp", "cuda" }
   ```
 - `on_attach`: [../lsp/clangd.lua:63](../lsp/clangd.lua#L63)
 - `on_init`: [../lsp/clangd.lua:63](../lsp/clangd.lua#L63)
@@ -4598,7 +4595,7 @@ vim.lsp.enable('glint')
 ```
 
 Default config:
-- `cmd`: [../lsp/glint.lua:37](../lsp/glint.lua#L37)
+- `cmd`: [../lsp/glint.lua:25](../lsp/glint.lua#L25)
 - `filetypes` :
   ```lua
   { "html.handlebars", "handlebars", "typescript", "typescript.glimmer", "javascript", "javascript.glimmer" }
@@ -9236,6 +9233,17 @@ vim.lsp.config('rescriptls', {
       },
     },
   })
+}
+```
+
+Detect file changes: While using @rescript/language-server >= 1.63.0 you have to detect file changes by registering the didChangeWatchedFiles hook.
+```lua
+capabilities = {
+    workspace = {
+        didChangeWatchedFiles = {
+            dynamicRegistration = true,
+        },
+    },
 }
 ```
 
